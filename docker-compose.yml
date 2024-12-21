@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+
+  product-database:
+    image: postgres
+    container_name: product-database
+    ports:
+      - "5440:5432"
+    environment:
+      - POSTGRES_USER=product
+      - POSTGRES_PASSWORD=product
+      - POSTGRES_DB=product-service
+    volumes:
+      - ./db-schema/:/docker-entrypoint-initdb.d/
+      - product_database_vol:/var/lib/postgresql/data
+
+volumes:
+  product_database_vol: {}
+  
