@@ -1,16 +1,21 @@
+from typing import Optional
 from datetime import datetime 
+from pydantic import BaseModel, Field, model_validator
 
-class Product:
-    def __init__(self, id: str, name: str, price: float, quantity: int, description: str, active: bool = True, created_at: datetime = None, updated_at: datetime = None):
-        self.id = id
-        self.name = name
-        self.price = price
-        self.quantity = quantity
-        self.active = active
-        self.description = description
-        self.created_at = created_at or datetime.now()
-        self.updated_at = updated_at
-        
-
-    def __repr__(self):
-        return f"Product(id={self.id}, name='{self.name}', price={self.price}, quantity={self.quantity}, active={self.active}, description={self.description}, created_at={self.created_at}, updated_at={self.updated_at})"
+class Product(BaseModel):
+        id: str
+        name: str
+        price: float = Field(gt=0, description="The price must be greater than zero")
+        quantity: int
+        active: bool = True
+        description: str
+        created_at: Optional[datetime] = None
+        updated_at: Optional[datetime] = None
+        @model_validator(mode='before')
+        def set_created_at(cls, values):
+            if values.get('created_at') is None:
+                values['created_at'] = datetime.now()
+            return values
+              
+        def __repr__(self):
+            return f"Product(id={self.id}, name='{self.name}', price={self.price}, quantity={self.quantity}, active={self.active}, description={self.description}, created_at={self.created_at}, updated_at={self.updated_at})"
