@@ -1,4 +1,4 @@
-from model import Product
+from model.product_model import Product
 from storage.product_storage import ProductStorage
 
 class ProductService:
