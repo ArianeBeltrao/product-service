@@ -1,0 +1,6 @@
+fastApi
+uvicorn
+pydantic
+pytest
+psycopg2-binary
+python-dotenv
