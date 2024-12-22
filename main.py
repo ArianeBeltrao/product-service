@@ -4,7 +4,6 @@ import logging
 from service.product_service import ProductService
 
 logger = logging.getLogger(__name__)
-# logger.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
