@@ -1,5 +1,5 @@
 from datetime import datetime 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 class Product(BaseModel):
         id: str
@@ -8,10 +8,5 @@ class Product(BaseModel):
         quantity: int
         active: bool = True
         description: str
-        created_at: datetime = Field(default=None)
+        created_at: datetime = Field(default_factory=datetime.now)
         updated_at: datetime = Field(default=None)
-        @model_validator(mode='before')
-        def set_created_at(cls, values):
-            if values.get('created_at') is None:
-                values['created_at'] = datetime.now()
-            return values
