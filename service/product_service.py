@@ -12,5 +12,3 @@ class ProductService:
         self.logger.info(f"Creating product...")
         product_created = self.storage.save_product(product)
         return product_created
-
-

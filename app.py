@@ -6,6 +6,6 @@ app = FastAPI()
 product_service = ProductService()
 
 @app.post("/products/", response_model=Product)
-def create_product(product_data: Product):
-    product = product_service.create_product(product_data.dict())
-    return product
+def create_product(product: Product):
+    created_product = product_service.create_product(product)
+    return created_product
