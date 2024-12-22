@@ -8,22 +8,27 @@ class ProductStorage:
         self.db = db_connection
     
     def save_product(self, product: Product) -> Product:
-        self.logger.info(f"Inserting product in DB")
-        cursor = self.db.cursor()
-        
-        cursor.execute(f"""
-            INSERT INTO products (id, name, description, price, quantity, active, created_at) 
-            VALUES (
-                '{product.id}', 
-                '{product.name}', 
-                '{product.description}', 
-                {product.price}, 
-                {product.quantity}, 
-                {product.active}, 
-                '{product.created_at}'
-            );
-            """)
-        self.db.commit()
-        cursor.close()
-        return product
+        self.logger.info("Inserting product in DB")
+        try:
+            cursor = self.db.cursor()
+            cursor.execute(f"""
+                INSERT INTO products (id, name, description, price, quantity, active, created_at) 
+                VALUES (
+                    '{product.id}', 
+                    '{product.name}', 
+                    '{product.description}', 
+                    {product.price}, 
+                    {product.quantity}, 
+                    {product.active}, 
+                    '{product.created_at}'
+                );
+                """)
 
+            self.db.commit()       
+        except Exception as ex: 
+            self.logger.error(f"Failed to insert product in DB. Error: {ex}")
+            raise ex
+        finally: 
+            cursor.close()
+
+        return product

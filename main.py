@@ -10,9 +10,9 @@ app = FastAPI()
 service = ProductService()
 
 @app.post("/products")
-async def create_product(product: Product):
+async def create_product(product: Product, response_model=Product):
     logger.info(f"Started CreateProduct with body={product.model_dump()}")
     product_created = service.create_product(product)
+
     logger.info(f"CreateProduct request finished with response={product.model_dump()}")
     return product_created
-
