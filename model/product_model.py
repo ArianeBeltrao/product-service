@@ -11,7 +11,3 @@ class Product(BaseModel):
         description: str
         created_at: datetime = Field(default_factory=datetime.now)
         updated_at: datetime = Field(default=None)
-
-
-product = Product(id="123", name="Notebook", price=1500.00, quantity=50, description="show de bola")
-print(product)
