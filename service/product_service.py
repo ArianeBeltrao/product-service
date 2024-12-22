@@ -1,5 +1,5 @@
 import logging
-from model.product_model import Product
+from model.product import Product
 from storage.product_storage import ProductStorage
 
 class ProductService:
