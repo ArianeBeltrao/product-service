@@ -5,7 +5,6 @@ class ProductService:
     def __init__(self):
         self.storage = ProductStorage()
 
-    def create_product(self, product_data: dict) -> Product:
-        product = Product(**product_data)
+    def create_product(self, product: Product) -> Product:
         self.storage.save_product(product)
         return product
