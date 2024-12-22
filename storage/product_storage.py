@@ -3,8 +3,9 @@ from model.product import Product
 from .db_conn import db_connection
 
 class ProductStorage: 
-    logger = logging.getLogger(__name__)
-    db = db_connection
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.db = db_connection
     
     def save_product(self, product: Product) -> Product:
         self.logger.info(f"Inserting product in DB")
@@ -25,3 +26,4 @@ class ProductStorage:
         self.db.commit()
         cursor.close()
         return product
+
