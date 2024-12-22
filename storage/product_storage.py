@@ -43,6 +43,7 @@ class ProductStorage:
         self.logger.info("Inserting product in DB")
         try:
             cursor = self.db.cursor()
+
             cursor.execute(f"""
                 INSERT INTO products (id, name, description, price, quantity, active, created_at) 
                 VALUES (
@@ -55,12 +56,11 @@ class ProductStorage:
                     '{product.created_at}'
                 );
                 """)
-
-            self.db.commit()       
         except Exception as ex: 
             self.logger.error(f"Failed to insert product in DB. Error: {ex}")
             raise ex
-        finally: 
+        finally:
+            self.db.commit()
             cursor.close()
 
         return product
