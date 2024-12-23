@@ -2,11 +2,21 @@ from fastapi import APIRouter
 from model.product import Product
 import logging
 from service.product_service import ProductService
+from typing import List
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 service = ProductService()
+
+@router.get("/products")
+async def get_all_products():
+    logger.info(f"Started GetAllProducts")
+    products_list: List[Product] = service.get_all_products()
+    
+    logger.info(f"GetAllProducts request finished with response={products_list}")
+    return products_list
+
 
 @router.get("/products/{id}")
 async def get_product(id: str):

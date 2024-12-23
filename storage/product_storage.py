@@ -1,12 +1,36 @@
 import logging
 from model.product import Product
 from config.db_conn import db_connection
+from typing import List
 
-class ProductStorage: 
+class ProductStorage:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.db = db_connection
-    
+        
+    def get_all_products(self) -> List[Product]:
+        self.logger.info("Getting all products in DB")
+        try:
+            with self.db.cursor() as cursor:
+                sql_query = """
+                    SELECT id, name, description, price, quantity, active, created_at, updated_at
+                    FROM products
+                """
+
+                cursor.execute(sql_query)
+                rows = cursor.fetchall()
+
+                product_list: List[Product] = []
+
+                for row in rows:
+                    product = self.map_product_row_to_model(row)
+                    product_list.append(product)
+
+                return product_list
+        except Exception as ex:
+            self.logger.error(f"Failed to get all products in DB. Error: {ex}")
+            raise
+
     def get_product_by_id(self, id: str) -> Product:
         self.logger.info("Getting product in DB")
         try:
@@ -16,47 +40,50 @@ class ProductStorage:
                     FROM products
                     WHERE id = %s;
                 """
-            
+
                 cursor.execute(sql_query, (id,))
                 result = cursor.fetchone()
-                
+
                 if result == None:
-                    # TODO add specific exception on next task 
+                    # TODO add specific exception on next task
                     raise Exception(f"Product not found with id {id}")
-                
-                return Product(
-                    id = result[0],
-                    name = result[1],
-                    description = result[2],
-                    price = result[3],
-                    quantity = result[4],
-                    active = result[5],
-                    created_at = result[6],
-                    updated_at = result[7]
-                )
-        except Exception as ex: 
+
+                return self.map_product_row_to_model(result)
+        except Exception as ex:
             self.logger.error(f"Failed to get product by id={id} in DB. Error: {ex}")
             raise
-    
+
     def save_product(self, product: Product) -> Product:
         self.logger.info("Inserting product in DB")
         try:
             with self.db.cursor() as cursor:
                 cursor.execute(f"""
-                    INSERT INTO products (id, name, description, price, quantity, active, created_at) 
+                    INSERT INTO products (id, name, description, price, quantity, active, created_at)
                     VALUES (
-                        '{product.id}', 
-                        '{product.name}', 
-                        '{product.description}', 
-                        {product.price}, 
-                        {product.quantity}, 
-                        {product.active}, 
+                        '{product.id}',
+                        '{product.name}',
+                        '{product.description}',
+                        {product.price},
+                        {product.quantity},
+                        {product.active},
                         '{product.created_at}'
                     );
                     """)
                 return product
-        except Exception as ex: 
+        except Exception as ex:
             self.logger.error(f"Failed to insert product in DB. Error: {ex}")
             raise ex
         finally:
             self.db.commit()
+
+    def map_product_row_to_model(self, row: List) -> Product:
+        return Product(
+            id = row[0],
+            name = row[1],
+            description = row[2],
+            price = row[3],
+            quantity = row[4],
+            active = row[5],
+            created_at = row[6],
+            updated_at = row[7]
+        )
