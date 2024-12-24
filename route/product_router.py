@@ -24,7 +24,7 @@ async def create_product(product: Product):
     logger.info(f"CreateProduct request finished with response={product.model_dump()}")
     return product_created
 
-@router.put("/products/{product_id}")
+@router.put("/products/{product_id}", response_model=Product)
 async def update_product(product_id: str, product: Product):
     logger.info(f"Started UpdateProduct with body={product.model_dump()} and product_id={product_id}")
     product_updated = service.update_product(product_id, product)
