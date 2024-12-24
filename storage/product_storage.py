@@ -116,8 +116,10 @@ class ProductStorage:
                     """)
                 return product
         except Exception as ex:
-            self.logger.error(f"Failed to update product in DB. Error: {ex}")
-            raise ex
+            self.logger.error(f"DatabaseError to update product in DB. Error: {ex}")
+            raise 
         finally:
             self.db.commit()
+            cursor.close()
+            
         
