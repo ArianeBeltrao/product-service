@@ -9,8 +9,8 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 service = ProductService()
 
-@router.get("/products")
-async def get_all_products():
+@router.get("/products", response_model=List[Product])
+def get_all_products():
     logger.info(f"Started GetAllProducts")
     products_list: List[Product] = service.get_all_products()
     
@@ -18,16 +18,16 @@ async def get_all_products():
     return products_list
 
 
-@router.get("/products/{id}")
-async def get_product(id: str):
+@router.get("/products/{id}", response_model=Product)
+def get_product(id: str):
     logger.info(f"Started GetProduct with id={id}")
     product = service.get_product_by_id(id)
     
     logger.info(f"GetProduct request finished with response={product.model_dump()}")
     return product
 
-@router.post("/products")
-async def create_product(product: Product):
+@router.post("/products", response_model=Product)
+def create_product(product: Product):
     logger.info(f"Started CreateProduct with body={product.model_dump()}")
     product_created = service.create_product(product)
 
