@@ -1,4 +1,6 @@
 import logging
+
+from psycopg2 import DatabaseError
 from model.product import Product
 from config.db_conn import db_connection
 from typing import List
@@ -7,7 +9,7 @@ class ProductStorage:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.db = db_connection
-        
+
     def get_all_products(self) -> List[Product]:
         self.logger.info("Getting all products in DB")
         try:
@@ -20,15 +22,18 @@ class ProductStorage:
                 cursor.execute(sql_query)
                 rows = cursor.fetchall()
 
-                product_list: List[Product] = []
+                product_list = []
 
                 for row in rows:
                     product = self.map_product_row_to_model(row)
                     product_list.append(product)
 
                 return product_list
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to get all products in DB. DatabaseError: {ex}")
+            raise
         except Exception as ex:
-            self.logger.error(f"Failed to get all products in DB. Error: {ex}")
+            self.logger.error(f"Failed on get all operation. Error: {ex}")
             raise
 
     def get_product_by_id(self, id: str) -> Product:
@@ -49,8 +54,11 @@ class ProductStorage:
                     raise Exception(f"Product not found with id {id}")
 
                 return self.map_product_row_to_model(result)
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to get product by id={id} in DB. DatabaseError: {ex}")
+            raise
         except Exception as ex:
-            self.logger.error(f"Failed to get product by id={id} in DB. Error: {ex}")
+            self.logger.error(f"Failed to get product by id operation. Error: {ex}")
             raise
 
     def save_product(self, product: Product) -> Product:
@@ -70,8 +78,11 @@ class ProductStorage:
                     );
                     """)
                 return product
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to insert product in DB. DatabaseError: {ex}")
+            raise
         except Exception as ex:
-            self.logger.error(f"Failed to insert product in DB. Error: {ex}")
+            self.logger.error(f"Failed to insert product operation. Error: {ex}")
             raise ex
         finally:
             self.db.commit()
