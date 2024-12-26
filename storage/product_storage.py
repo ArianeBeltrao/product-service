@@ -50,8 +50,7 @@ class ProductStorage:
                 result = cursor.fetchone()
 
                 if result == None:
-                    # TODO add specific exception on next task
-                    raise Exception(f"Product not found with id {id}")
+                    raise ValueError(f"Product not found with id {id}")
 
                 return self.map_product_row_to_model(result)
         except DatabaseError as ex:
