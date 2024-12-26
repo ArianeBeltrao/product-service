@@ -1,6 +1,7 @@
 import logging
 from model.product import Product
 from storage.product_storage import ProductStorage
+from datetime import datetime 
 
 class ProductService:
     
@@ -16,6 +17,7 @@ class ProductService:
         self.logger.info(f"Creating product...")
         return self.storage.save_product(product)
     
-    def update_product(self, id: str, product: Product) -> Product:
+    def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product with ID {id}...")
-        return self.storage.update_product(id, product)
+        product.updated_at = datetime.now()
+        return self.storage.update_product(product)

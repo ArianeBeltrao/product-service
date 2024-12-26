@@ -1,3 +1,4 @@
+from psycopg2 import DatabaseError
 import logging
 from model.product import Product
 from config.db_conn import db_connection
@@ -61,28 +62,26 @@ class ProductStorage:
         finally:
             self.db.commit()
             
-    def update_product(self, id: str, product: Product) -> Product:
+    def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product in DB with ID {id}")
         try:
             with self.db.cursor() as cursor:
                 cursor.execute(f"""
                     UPDATE products
                     SET 
-                        name = '{product.name}',
-                        description = '{product.description}',
-                        price = {product.price},
-                        quantity = {product.quantity},
-                        active = {product.active},
-                        created_at = '{product.created_at}',
-                        updated_at = NOW()
-                    WHERE id = '{id}';
-                    """)
+                        name = %s,
+                        description = %s,
+                        price = %s,
+                        quantity = %s,
+                        active = %s,
+                        updated_at = %s
+                    WHERE id = %s;
+                    """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
                 return product
-        except Exception as ex:
-            self.logger.error(f"DatabaseError to update product in DB. Error: {ex}")
+        except DatabaseError as ex:
+            self.logger.error(f"Failed on update operation. Error: {ex}")
             raise 
         finally:
             self.db.commit()
-            cursor.close()
             
         
