@@ -17,6 +17,7 @@ class ProductStorage:
                 sql_query = """
                     SELECT id, name, description, price, quantity, active, created_at, updated_at
                     FROM products
+                    WHERE active = True
                 """
 
                 cursor.execute(sql_query)
@@ -31,9 +32,6 @@ class ProductStorage:
                 return product_list
         except DatabaseError as ex:
             self.logger.error(f"Failed to get all products in DB. DatabaseError: {ex}")
-            raise
-        except Exception as ex:
-            self.logger.error(f"Failed on get all operation. Error: {ex}")
             raise
 
     def get_product_by_id(self, id: str) -> Product:
@@ -56,9 +54,6 @@ class ProductStorage:
         except DatabaseError as ex:
             self.logger.error(f"Failed to get product by id={id} in DB. DatabaseError: {ex}")
             raise
-        except Exception as ex:
-            self.logger.error(f"Failed to get product by id operation. Error: {ex}")
-            raise
 
     def save_product(self, product: Product) -> Product:
         self.logger.info("Inserting product in DB")
@@ -66,23 +61,12 @@ class ProductStorage:
             with self.db.cursor() as cursor:
                 cursor.execute(f"""
                     INSERT INTO products (id, name, description, price, quantity, active, created_at)
-                    VALUES (
-                        '{product.id}',
-                        '{product.name}',
-                        '{product.description}',
-                        {product.price},
-                        {product.quantity},
-                        {product.active},
-                        '{product.created_at}'
-                    );
-                    """)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                    """, (product.id, product.name, product.description, product.price, product.quantity, product.active, product.created_at))
                 return product
         except DatabaseError as ex:
             self.logger.error(f"Failed to insert product in DB. DatabaseError: {ex}")
             raise
-        except Exception as ex:
-            self.logger.error(f"Failed to insert product operation. Error: {ex}")
-            raise ex
         finally:
             self.db.commit()
 
