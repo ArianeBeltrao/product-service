@@ -28,4 +28,6 @@ async def create_product(product: Product):
 async def update_product(product: Product):
     logger.info(f"Started UpdateProduct with body={product.model_dump()}")
     product_updated = service.update_product(product)
+    
+    logger.info(f"UpdateProduct request finished with response={product.model_dump()}")
     return product_updated
