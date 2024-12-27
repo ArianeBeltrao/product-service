@@ -78,7 +78,7 @@ class ProductStorage:
                     WHERE id = %s;
                     """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
             self.db.commit()          
-            return product
+            return self.get_product_by_id(product.id)
         except DatabaseError as ex:
             self.logger.error(f"Failed on update operation. Error: {ex}")
             self.db.rollback()
