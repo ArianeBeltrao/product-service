@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from route.product_router import router as product_router
+from route.product_router import router
 import logging
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-app.include_router(product_router)
+app.include_router(router)
