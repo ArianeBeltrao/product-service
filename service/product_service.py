@@ -20,3 +20,7 @@ class ProductService:
     def create_product(self, product: Product) -> Product:
         self.logger.info(f"Creating product...")
         return self.storage.save_product(product)
+
+    def delete_product_by_id(self, id: str) -> None:
+        self.logger.info(f"Deleting product by id...")
+        self.storage.delete_product_by_id(id)
