@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from model.product import Product
 from storage.product_storage import ProductStorage
@@ -5,9 +6,9 @@ from typing import List
 
 class ProductService:
     
-    def __init__(self):
+    def __init__(self, storage: ProductStorage):
         self.logger = logging.getLogger(__name__)
-        self.storage = ProductStorage()
+        self.storage = storage
         
     def get_all_products(self) -> List[Product]:
         self.logger.info(f"Getting all products...") 

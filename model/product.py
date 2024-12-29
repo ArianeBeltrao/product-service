@@ -3,7 +3,7 @@ import ulid
 from pydantic import BaseModel, Field
 
 class Product(BaseModel):
-    id: str = Field(default_factory=lambda: str(ulid.new()))
+    id: str = Field(default_factory=lambda: str(ulid.new()), description="Product ulid")
     name: str = Field(description="Product name")
     description: str = Field(description="Product description")
     price: float = Field(gt=0, description="The price must be greater than zero")
