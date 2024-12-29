@@ -81,11 +81,11 @@ class ProductStorage:
                 cursor.execute(sql_query, (id,))
                 if cursor.rowcount == 0:
                     raise ValueError(f"Product not found with id {id}")
+                self.db.commit()
         except DatabaseError as ex:
+            self.db.rollback()
             self.logger.error(f"Failed to delete product by id={id} in DB. DatabaseError: {ex}")
             raise
-        finally:
-            self.db.commit()
 
     def map_product_row_to_model(self, row: List) -> Product:
         return Product(

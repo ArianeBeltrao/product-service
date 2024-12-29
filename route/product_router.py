@@ -34,7 +34,7 @@ def create_product(product: Product):
     logger.info(f"CreateProduct request finished with response={product.model_dump()}")
     return product_created
 
-@router.delete("/products/{id}", response_model=None)
+@router.delete("/products/{id}")
 def delete_product(id: str):
     logger.info(f"Started DeleteProduct with id={id}")
     service.delete_product_by_id(id)
