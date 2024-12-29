@@ -43,7 +43,7 @@ def create_product(product: Product, service: ServiceDep):
     return product_created
 
 @router.delete("/products/{id}")
-def delete_product(id: str):
+def delete_product(id: str, service: ServiceDep):
     logger.info(f"Started DeleteProduct with id={id}")
     service.delete_product_by_id(id)
     
