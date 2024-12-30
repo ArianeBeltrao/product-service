@@ -46,7 +46,7 @@ def delete_product(id: str, service: ServiceDep):
     return {"message": "Product deleted successfully"}
 
 @router.put("/products", response_model=Product)
-async def update_product(product: Product):
+def update_product(product: Product):
     logger.info(f"Started UpdateProduct with body={product.model_dump()}")
     product_updated = service.update_product(product)
     
