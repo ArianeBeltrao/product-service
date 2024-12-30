@@ -75,10 +75,26 @@ class ProductStorage:
                         quantity = %s,
                         active = %s,
                         updated_at = %s
-                    WHERE id = %s;
+                    WHERE id = %s
+                    RETURNING id, name, description, price, quantity, active, created_at, updated_at
                     """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
+                result = cursor.fetchone()
+                
+                if result is None:
+                    self.logger.error(f"Product with ID {product.id} not found.")
+                    raise ValueError(f"Product with ID {product.id} not found.")
+                
             self.db.commit()          
-            return self.get_product_by_id(product.id)
+            return Product(
+                    id = result[0],
+                    name = result[1],
+                    description = result[2],
+                    price = result[3],
+                    quantity = result[4],
+                    active = result[5],
+                    created_at = result[6],
+                    updated_at = result[7]
+                )
         except DatabaseError as ex:
             self.logger.error(f"Failed on update operation. Error: {ex}")
             self.db.rollback()
