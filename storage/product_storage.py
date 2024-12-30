@@ -84,7 +84,7 @@ class ProductStorage:
                         quantity = %s,
                         active = %s,
                         updated_at = %s
-                    WHERE id = %s AND active = TRUE
+                    WHERE id = %s
                     RETURNING id, name, description, price, quantity, active, created_at, updated_at
                     """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
                 result = cursor.fetchone()
