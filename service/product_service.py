@@ -26,3 +26,7 @@ class ProductService:
         self.logger.info(f"Updating product with ID {id}...")
         product.updated_at = datetime.now()
         return self.storage.update_product(product)
+
+    def delete_product_by_id(self, id: str) -> None:
+        self.logger.info(f"Deleting product by id...")
+        self.storage.delete_product_by_id(id)

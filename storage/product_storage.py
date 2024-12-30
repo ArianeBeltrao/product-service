@@ -94,6 +94,23 @@ class ProductStorage:
             raise 
 
 
+    def delete_product_by_id(self, id: str) -> None:
+        self.logger.info("Deleting product in DB")
+        try:
+            with self.db.cursor() as cursor:
+                sql_query = """
+                    DELETE FROM products
+                    WHERE id = %s;
+                """
+                cursor.execute(sql_query, (id,))
+                if cursor.rowcount == 0:
+                    raise ValueError(f"Product not found with id {id}")
+                self.db.commit()
+        except DatabaseError as ex:
+            self.db.rollback()
+            self.logger.error(f"Failed to delete product by id={id} in DB. DatabaseError: {ex}")
+            raise
+
     def map_product_row_to_model(self, row: List) -> Product:
         return Product(
             id = row[0],
