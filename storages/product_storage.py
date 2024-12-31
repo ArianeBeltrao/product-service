@@ -1,6 +1,5 @@
 from psycopg2 import DatabaseError
 import logging
-from psycopg2 import DatabaseError
 from models.product import Product
 from typing import List
 from psycopg2._psycopg import connection
