@@ -25,3 +25,7 @@ class ProductService:
     def delete_product_by_id(self, id: str) -> None:
         self.logger.info(f"Deleting product by id...")
         self.storage.delete_product_by_id(id)
+    
+    def update_product(self, id: str, product: Product) -> Product:
+        self.logger.info(f"Updating product with ID {id}...")
+        return self.storage.update_product(id, product)

@@ -97,3 +97,27 @@ class ProductStorage:
             created_at = row[6],
             updated_at = row[7]
         )
+            
+    def update_product(self, id: str, product: Product) -> Product:
+        self.logger.info(f"Updating product in DB with ID {id}")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute(f"""
+                    UPDATE products
+                    SET 
+                        name = '{product.name}',
+                        description = '{product.description}',
+                        price = {product.price},
+                        quantity = {product.quantity},
+                        active = {product.active},
+                        created_at = '{product.created_at}',
+                        updated_at = NOW()
+                    WHERE id = '{id}';
+                    """)
+                return product
+        except Exception as ex:
+            self.logger.error(f"Failed to update product in DB. Error: {ex}")
+            raise ex
+        finally:
+            self.db.commit()
+        
