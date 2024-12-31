@@ -100,10 +100,10 @@ class ProductStorage:
         )
             
     def update_product(self, product: Product) -> Product:
-        self.logger.info(f"Updating product in DB with ID {id}")
+        self.logger.info(f"Updating product in DB with ID {product.id}")
         try:
             with self.db.cursor() as cursor:
-                cursor.execute(f"""
+                cursor.execute("""
                     UPDATE products
                     SET 
                         name = %s,
@@ -114,11 +114,11 @@ class ProductStorage:
                         updated_at = %s
                     WHERE id = %s;
                     """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
-                return product
+            self.db.commit()          
+            return product
         except DatabaseError as ex:
             self.logger.error(f"Failed on update operation. Error: {ex}")
+            self.db.rollback()
             raise 
-        finally:
-            self.db.commit()
             
         
