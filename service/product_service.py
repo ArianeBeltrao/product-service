@@ -1,9 +1,8 @@
 import logging
 from model.product import Product
 from typing import List
-
 from storage.product_storage import ProductStorage
-from datetime import datetime 
+from datetime import datetime
 
 class ProductService:
     
