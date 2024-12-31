@@ -1,13 +1,11 @@
 from psycopg2 import DatabaseError
 import logging
-
-from psycopg2 import DatabaseError
-from model.product import Product
-from config.db_conn import db_connection
+from models.product import Product
 from typing import List
+from psycopg2._psycopg import connection
 
 class ProductStorage:
-    def __init__(self):
+    def __init__(self, db_connection: connection):
         self.logger = logging.getLogger(__name__)
         self.db = db_connection
 
@@ -129,3 +127,4 @@ class ProductStorage:
             created_at = row[6],
             updated_at = row[7]
         )
+            

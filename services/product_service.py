@@ -1,14 +1,14 @@
 import logging
-from model.product import Product
-from storage.product_storage import ProductStorage
-from datetime import datetime 
+from models.product import Product
 from typing import List
+from storages.product_storage import ProductStorage
+from datetime import datetime
 
 class ProductService:
     
-    def __init__(self):
+    def __init__(self, storage: ProductStorage):
         self.logger = logging.getLogger(__name__)
-        self.storage = ProductStorage()
+        self.storage = storage
         
     def get_all_products(self) -> List[Product]:
         self.logger.info(f"Getting all products...") 
@@ -22,6 +22,11 @@ class ProductService:
         self.logger.info(f"Creating product...")
         return self.storage.save_product(product)
     
+    def update_product(self, product: Product) -> Product:
+        self.logger.info(f"Updating product with ID {id}...")
+        product.updated_at = datetime.now()
+        return self.storage.update_product(product)
+
     def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product with ID {id}...")
         product.updated_at = datetime.now()
