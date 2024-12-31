@@ -1,22 +1,17 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from model.product import Product
 import logging
-import time
-from service.product_service import ProductService
 from typing import Annotated, List
-from storage.product_storage import ProductStorage
-from config.db_conn import db_connection
+from service.product_service import ProductService
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
-storage = ProductStorage(db_connection)
+def get_product_service(request: Request):
+    return request.state.product_service
 
-def get_service():
-    return ProductService(storage)
-
-ServiceDep = Annotated[ProductService, Depends(get_service)]
+ServiceDep = Annotated[ProductService, Depends(get_product_service)]
 
 @router.get("/products", response_model = List[Product])
 def get_all_products(service: ServiceDep):

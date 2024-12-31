@@ -2,9 +2,10 @@ import logging
 from psycopg2 import DatabaseError
 from model.product import Product
 from typing import List
+from psycopg2._psycopg import connection
 
 class ProductStorage:
-    def __init__(self, db_connection):
+    def __init__(self, db_connection: connection):
         self.logger = logging.getLogger(__name__)
         self.db = db_connection
 

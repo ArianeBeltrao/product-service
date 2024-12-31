@@ -1,7 +1,8 @@
 import logging
 from model.product import Product
-from storage.product_storage import ProductStorage
 from typing import List
+
+from storage.product_storage import ProductStorage
 
 class ProductService:
     
