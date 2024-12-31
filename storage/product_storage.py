@@ -1,3 +1,4 @@
+from psycopg2 import DatabaseError
 import logging
 
 from psycopg2 import DatabaseError
@@ -69,6 +70,36 @@ class ProductStorage:
             raise
         finally:
             self.db.commit()
+            
+    def update_product(self, product: Product) -> Product:
+        self.logger.info(f"Updating product in DB with ID {product.id}")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE products
+                    SET 
+                        name = %s,
+                        description = %s,
+                        price = %s,
+                        quantity = %s,
+                        active = %s,
+                        updated_at = %s
+                    WHERE id = %s
+                    RETURNING id, name, description, price, quantity, active, created_at, updated_at
+                    """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
+                result = cursor.fetchone()
+                
+                if result is None:
+                    self.logger.error(f"Product with ID {product.id} not found.")
+                    raise ValueError(f"Product with ID {product.id} not found.")
+                
+            self.db.commit()          
+            return self.map_product_row_to_model(result)
+        except DatabaseError as ex:
+            self.logger.error(f"Failed on update operation. Error: {ex}")
+            self.db.rollback()
+            raise 
+
 
     def delete_product_by_id(self, id: str) -> None:
         self.logger.info("Deleting product in DB")

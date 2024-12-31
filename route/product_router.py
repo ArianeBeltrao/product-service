@@ -34,6 +34,13 @@ def create_product(product: Product):
     logger.info(f"CreateProduct request finished with response={product.model_dump()}")
     return product_created
 
+@router.put("/products", response_model=Product)
+def update_product(product: Product):
+    logger.info(f"Started UpdateProduct with body={product.model_dump()}")
+    product_updated = service.update_product(product)
+    
+    logger.info(f"UpdateProduct request finished with response={product.model_dump()}")
+    return product_updated
 @router.delete("/products/{id}")
 def delete_product(id: str):
     logger.info(f"Started DeleteProduct with id={id}")
