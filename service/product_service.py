@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 from model.product import Product
 from typing import List
