@@ -45,6 +45,7 @@ def delete_product(id: str, service: ServiceDep):
     logger.info(f"DeleteProduct request finished for id={id}")
     return {"message": "Product deleted successfully"}
 @router.put("/products/{product_id}")
+@router.put("/products/{product_id}", response_model=Product)
 async def update_product(product_id: str, product: Product):
     logger.info(f"Started UpdateProduct with body={product.model_dump()} and product_id={product_id}")
     product_updated = service.update_product(product_id, product)
