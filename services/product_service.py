@@ -21,6 +21,11 @@ class ProductService:
     def create_product(self, product: Product) -> Product:
         self.logger.info(f"Creating product...")
         return self.storage.save_product(product)
+    
+    def update_product(self, product: Product) -> Product:
+        self.logger.info(f"Updating product with ID {id}...")
+        product.updated_at = datetime.now()
+        return self.storage.update_product(product)
 
     def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product with ID {id}...")
@@ -30,4 +35,3 @@ class ProductService:
     def delete_product_by_id(self, id: str) -> None:
         self.logger.info(f"Deleting product by id...")
         self.storage.delete_product_by_id(id)
-
