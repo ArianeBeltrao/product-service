@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Request
-from model.product import Product
+from models.product import Product
 import logging
 from typing import Annotated, List
-from service.product_service import ProductService
+from services.product_service import ProductService
 
 router = APIRouter()
 
@@ -38,7 +38,7 @@ def create_product(product: Product, service: ServiceDep):
     return product_created
 
 @router.put("/products", response_model=Product)
-def update_product(product: Product):
+def update_product(product: Product, service: ServiceDep):
     logger.info(f"Started UpdateProduct with body={product.model_dump()}")
     product_updated = service.update_product(product)
     

@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from config.db_conn import get_database_connection
-from route.product_router import router
+from configs.db_conn import get_database_connection
+from routes.product_router import router
 import logging
-from service.product_service import ProductService
-from storage.product_storage import ProductStorage
+from services.product_service import ProductService
+from storages.product_storage import ProductStorage
 
 logger = logging.getLogger(__name__)
 

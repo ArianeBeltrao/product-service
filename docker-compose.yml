@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=product
       - POSTGRES_DB=product-service
     volumes:
-      - ./config/migrations/:/docker-entrypoint-initdb.d/
+      - ./configs/migrations/:/docker-entrypoint-initdb.d/
       - product_database_vol:/var/lib/postgresql/data
 
 volumes:
