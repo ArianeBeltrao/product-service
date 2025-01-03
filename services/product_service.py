@@ -20,15 +20,12 @@ class ProductService:
     
     def create_product(self, product: Product) -> Product:
         self.logger.info(f"Creating product...")
+        if not product.name:
+            raise ValueError("Product name cannot be empty")
         return self.storage.save_product(product)
     
     def update_product(self, product: Product) -> Product:
-        self.logger.info(f"Updating product with ID {id}...")
-        product.updated_at = datetime.now()
-        return self.storage.update_product(product)
-
-    def update_product(self, product: Product) -> Product:
-        self.logger.info(f"Updating product with ID {id}...")
+        self.logger.info(f"Updating product with ID {product.id}...")
         product.updated_at = datetime.now()
         return self.storage.update_product(product)
 
