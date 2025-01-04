@@ -21,7 +21,6 @@ class ProductStorage:
 
                 cursor.execute(sql_query)
                 rows = cursor.fetchall()
-
                 product_list = []
 
                 for row in rows:
@@ -42,10 +41,9 @@ class ProductStorage:
                     FROM products
                     WHERE id = %s;
                 """
-
                 cursor.execute(sql_query, (id,))
                 result = cursor.fetchone()
-
+                
                 if result == None:
                     raise ValueError(f"Product not found with id {id}")
 
@@ -54,7 +52,7 @@ class ProductStorage:
             self.logger.error(f"Failed to get product by id={id} in DB. DatabaseError: {ex}")
             raise
 
-    def save_product(self, product: Product) -> Product:
+    def create_product(self, product: Product) -> Product:
         self.logger.info("Inserting product in DB")
         try:
             with self.db.cursor() as cursor:
@@ -88,7 +86,6 @@ class ProductStorage:
                 result = cursor.fetchone()
                 
                 if result is None:
-                    self.logger.error(f"Product with ID {product.id} not found.")
                     raise ValueError(f"Product with ID {product.id} not found.")
                 
             self.db.commit()          
@@ -108,8 +105,10 @@ class ProductStorage:
                     WHERE id = %s;
                 """
                 cursor.execute(sql_query, (id,))
+                
                 if cursor.rowcount == 0:
                     raise ValueError(f"Product not found with id {id}")
+                
                 self.db.commit()
         except DatabaseError as ex:
             self.db.rollback()
