@@ -65,3 +65,24 @@ def test_router_delete_product_by_id(service, client):
 
     assert response.status_code == 204
     service.delete_product_by_id.assert_called_once_with('01JFTE35ZRRZWCSKK6TBB1DZCT')
+
+def test_router_get_product_by_id_value_error(service, client):
+    service.get_product_by_id.side_effect = ValueError()
+    response = client.get("/products/01JFTE35ZRRZWCSKK6TBB1DZCT")
+    
+    assert response.status_code == 404
+    service.get_product_by_id.assert_called_once_with('01JFTE35ZRRZWCSKK6TBB1DZCT')   
+
+def test_router_update_product_value_error(service, client, product, product_json):
+    service.update_product.side_effect = ValueError()
+    response = client.put("/products", json=product_json)
+    
+    assert response.status_code == 404
+    service.update_product.assert_called_once_with(product)
+    
+def test_router_delete_product_by_id_value_error(service, client):
+    service.delete_product_by_id.side_effect = ValueError()
+    response = client.delete("/products/01JFTE35ZRRZWCSKK6TBB1DZCT")
+
+    assert response.status_code == 404
+    service.delete_product_by_id.assert_called_once_with('01JFTE35ZRRZWCSKK6TBB1DZCT')
