@@ -2,6 +2,7 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from pytest import fixture
 from models.product import Product
+from services.product_service import ProductService
 from storages.product_storage import ProductStorage
 
 @fixture   
@@ -30,3 +31,6 @@ def product():
         created_at = datetime(2024, 12, 23, 15, 57, 25, 496623),
         updated_at = None
     )
+    
+    
+            

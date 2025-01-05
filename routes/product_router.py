@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, status
 from models.product import Product
 import logging
 from typing import Annotated, List
@@ -22,14 +22,14 @@ def get_all_products(service: ServiceDep):
     return products_list
 
 @router.get("/products/{id}", response_model=Product)
-def get_product(id: str, service: ServiceDep):
+def get_product_by_id(id: str, service: ServiceDep):
     logger.info(f"Started GetProduct with id={id}")
     product = service.get_product_by_id(id)
     
     logger.info(f"GetProduct request finished with response={product.model_dump()}")
     return product
 
-@router.post("/products", response_model=Product)
+@router.post("/products", status_code=status.HTTP_201_CREATED, response_model=Product)
 def create_product(product: Product, service: ServiceDep):
     logger.info(f"Started CreateProduct with body={product.model_dump()}")
     product_created = service.create_product(product)
@@ -45,10 +45,10 @@ def update_product(product: Product, service: ServiceDep):
     logger.info(f"UpdateProduct request finished with response={product.model_dump()}")
     return product_updated
 
-@router.delete("/products/{id}")
+@router.delete("/products/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(id: str, service: ServiceDep):
     logger.info(f"Started DeleteProduct with id={id}")
     service.delete_product_by_id(id)
     
     logger.info(f"DeleteProduct request finished for id={id}")
-    return {"message": "Product deleted successfully"}
+    return
