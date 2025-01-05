@@ -1,12 +1,15 @@
+import logging
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
 from configs.db_conn import get_database_connection
 from routes.product_router import router
-import logging
 from services.product_service import ProductService
 from storages.product_storage import ProductStorage
 
 logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,7 +18,11 @@ async def lifespan(app: FastAPI):
     product_service = ProductService(product_storage)
 
     yield {"product_service": product_service}
-    logger.info(f"Shutdown application")
-    
-app = FastAPI(lifespan=lifespan, title="Product Service",)
+    logger.info("Shutdown application")
+
+
+app = FastAPI(
+    lifespan=lifespan,
+    title="Product Service",
+)
 app.include_router(router)

@@ -4,3 +4,4 @@ pydantic
 pytest
 psycopg2-binary
 python-dotenv
+pylint

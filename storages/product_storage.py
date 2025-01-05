@@ -1,8 +1,11 @@
-from psycopg2 import DatabaseError
 import logging
-from models.product import Product
 from typing import List
+
+from psycopg2 import DatabaseError
 from psycopg2._psycopg import connection
+
+from models.product import Product
+
 
 class ProductStorage:
     def __init__(self, db_connection: connection):
@@ -43,35 +46,50 @@ class ProductStorage:
                 """
                 cursor.execute(sql_query, (id,))
                 result = cursor.fetchone()
-                
-                if result == None:
+
+                if result is None:
                     raise ValueError(f"Product not found with id {id}")
 
                 return self.map_product_row_to_model(result)
         except DatabaseError as ex:
-            self.logger.error(f"Failed to get product by id={id} in DB. DatabaseError: {ex}")
+            self.logger.error(
+                f"Failed to get product by id={id} in DB. DatabaseError: {ex}"
+            )
             raise
 
     def create_product(self, product: Product) -> Product:
         self.logger.info("Inserting product in DB")
         try:
             with self.db.cursor() as cursor:
-                cursor.execute(f"""
-                    INSERT INTO products (id, name, description, price, quantity, active, created_at)
+                cursor.execute(
+                    """
+                    INSERT INTO products 
+                    (id, name, description, price, quantity, active, created_at)
                     VALUES (%s, %s, %s, %s, %s, %s, %s);
-                    """, (product.id, product.name, product.description, product.price, product.quantity, product.active, product.created_at))
+                    """,
+                    (
+                        product.id,
+                        product.name,
+                        product.description,
+                        product.price,
+                        product.quantity,
+                        product.active,
+                        product.created_at,
+                    ),
+                )
                 return product
         except DatabaseError as ex:
             self.logger.error(f"Failed to insert product in DB. DatabaseError: {ex}")
             raise
         finally:
             self.db.commit()
-            
+
     def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product in DB with ID {product.id}")
         try:
             with self.db.cursor() as cursor:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE products
                     SET 
                         name = %s,
@@ -82,19 +100,28 @@ class ProductStorage:
                         updated_at = %s
                     WHERE id = %s
                     RETURNING id, name, description, price, quantity, active, created_at, updated_at
-                    """, (product.name, product.description, product.price, product.quantity, product.active, product.updated_at, product.id))
+                    """,
+                    (
+                        product.name,
+                        product.description,
+                        product.price,
+                        product.quantity,
+                        product.active,
+                        product.updated_at,
+                        product.id,
+                    ),
+                )
                 result = cursor.fetchone()
-                
+
                 if result is None:
                     raise ValueError(f"Product with ID {product.id} not found.")
-                
-            self.db.commit()          
+
+            self.db.commit()
             return self.map_product_row_to_model(result)
         except DatabaseError as ex:
             self.logger.error(f"Failed on update operation. Error: {ex}")
             self.db.rollback()
-            raise 
-
+            raise
 
     def delete_product_by_id(self, id: str) -> None:
         self.logger.info("Deleting product in DB")
@@ -105,25 +132,26 @@ class ProductStorage:
                     WHERE id = %s;
                 """
                 cursor.execute(sql_query, (id,))
-                
+
                 if cursor.rowcount == 0:
                     raise ValueError(f"Product not found with id {id}")
-                
+
                 self.db.commit()
         except DatabaseError as ex:
             self.db.rollback()
-            self.logger.error(f"Failed to delete product by id={id} in DB. DatabaseError: {ex}")
+            self.logger.error(
+                f"Failed to delete product by id={id} in DB. DatabaseError: {ex}"
+            )
             raise
 
     def map_product_row_to_model(self, row: List) -> Product:
         return Product(
-            id = row[0],
-            name = row[1],
-            description = row[2],
-            price = row[3],
-            quantity = row[4],
-            active = row[5],
-            created_at = row[6],
-            updated_at = row[7]
+            id=row[0],
+            name=row[1],
+            description=row[2],
+            price=row[3],
+            quantity=row[4],
+            active=row[5],
+            created_at=row[6],
+            updated_at=row[7],
         )
-            
