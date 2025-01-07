@@ -10,3 +10,5 @@ setup:
 run:
 	docker compose up --build product-service
 
+coverage:
+	pytest . -v --cov=. && coverage html
