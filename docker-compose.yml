@@ -1,5 +1,15 @@
 version: "3.7"
+
 services:
+  product-service:
+    build: .
+    container_name: product-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - product-database
+    networks:
+      - product-networks
 
   product-database:
     image: postgres
@@ -13,7 +23,13 @@ services:
     volumes:
       - ./configs/migrations/:/docker-entrypoint-initdb.d/
       - product_database_vol:/var/lib/postgresql/data
+    networks:
+      - product-networks
 
 volumes:
   product_database_vol: {}
+
+networks:
+  product-networks:
+    driver: bridge
   
