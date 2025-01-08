@@ -72,6 +72,12 @@ def fixture_product_row():
 
 @fixture(name="updated_product_row")
 def fixture_updated_product_row():
+    """
+    Provides a sample updated product row for testing.
+
+    Returns:
+        tuple: A tuple representing a product with updated fields.
+    """
     return (
         "01JFTE35ZRRZWCSKK6TBB1DZCT",
         "cacau house",
@@ -244,6 +250,21 @@ def test_get_product_by_id_value_error(cursor, storage):
     cursor.fetchone.assert_called_once()
 
 
+def test_get_product_by_id_database_error(cursor, storage):
+    """
+    Test that `get_product_by_id` raises a `DatabaseError`
+    when a database error occurs during the query execution.
+
+    Verifies that the cursor's `execute` method is called exactly once.
+    """
+    cursor.execute.side_effect = DatabaseError()
+
+    with pytest.raises(DatabaseError):
+        storage.get_product_by_id("01JFTE35ZRRZWCSKK6TBB1DZCT")
+
+    cursor.execute.assert_called_once()
+
+
 def test_create_product_database_error(cursor, storage, product, db_conn):
     """
     Test that `create_product` raises a `DatabaseError`
@@ -275,6 +296,24 @@ def test_update_product_value_error(cursor, storage, product, db_conn):
     db_conn.commit.assert_not_called()
 
 
+def test_update_product_database_error(storage, cursor, product, db_conn):
+    """
+    Test that `update_product` raises a `DatabaseError`
+    when a database error occurs during the update operation.
+
+    Verifies that the cursor's `execute` method is called exactly once
+    and that a rollback is performed on the database connection.
+    """
+    cursor.execute.side_effect = DatabaseError()
+
+    with pytest.raises(DatabaseError):
+        storage.update_product(product)
+
+    cursor.execute.assert_called_once()
+
+    db_conn.rollback.assert_called_once()
+
+
 def test_delete_product_by_id_value_error(cursor, storage, db_conn):
     """
     Test that `delete_product_by_id` raises a `ValueError`
@@ -288,3 +327,21 @@ def test_delete_product_by_id_value_error(cursor, storage, db_conn):
     cursor.execute.assert_called_once()
 
     db_conn.commit.assert_not_called()
+
+
+def test_delete_product_by_id_database_error(cursor, storage, db_conn):
+    """
+    Test that `delete_product_by_id` raises a `DatabaseError`
+    when a database error occurs during the deletion operation.
+
+    Verifies that the cursor's `execute` method is called exactly once
+    and that a rollback is performed on the database connection.
+    """
+    cursor.execute.side_effect = DatabaseError()
+
+    with pytest.raises(DatabaseError):
+        storage.delete_product_by_id("01JFTE35")
+
+    cursor.execute.assert_called_once()
+
+    db_conn.rollback.assert_called_once()
