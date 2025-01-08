@@ -1,31 +1,18 @@
 from datetime import datetime
-from unittest.mock import MagicMock
 
 from pytest import fixture
 
 from models.product import Product
-from storages.product_storage import ProductStorage
 
 
-@fixture
-def mock_cursor():
-    return MagicMock()
+@fixture(name="product")
+def fixture_product():
+    """
+    Creates a sample Product instance for testing purposes.
 
-
-@fixture
-def mock_db(mock_cursor):
-    mock_db = MagicMock()
-    mock_db.cursor.return_value.__enter__.return_value = mock_cursor
-    return mock_db
-
-
-@fixture
-def storage(mock_db):
-    return ProductStorage(mock_db)
-
-
-@fixture
-def product():
+    Returns:
+        Product: A Product instance with predefined attributes.
+    """
     return Product(
         id="01JFTE35ZRRZWCSKK6TBB1DZCT",
         name="cacau house",
