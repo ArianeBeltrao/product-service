@@ -10,6 +10,8 @@ services:
       - product-database
     networks:
       - product-networks
+    volumes:
+      - .:/app/
 
   product-database:
     image: postgres
@@ -32,4 +34,3 @@ volumes:
 networks:
   product-networks:
     driver: bridge
-  

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List
 
@@ -12,7 +13,10 @@ class ProductStorage:
         self.logger = logging.getLogger(__name__)
         self.db = db_connection
 
-    def get_all_products(self) -> List[Product]:
+    async def get_all_products(self) -> List[Product]:
+        self.logger.debug("Sleeping for 3 seconds")
+        await asyncio.sleep(3)
+        self.logger.debug("End of sleep")
         self.logger.info("Getting all products in DB")
         try:
             with self.db.cursor() as cursor:

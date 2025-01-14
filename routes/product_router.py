@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 
-from models.product import Product
+from models.product import Product, ProductAndCustomer
 from services.product_service import ProductService
 
 router = APIRouter()
@@ -16,6 +16,15 @@ def get_product_service(request: Request):
 
 
 ServiceDep = Annotated[ProductService, Depends(get_product_service)]
+
+
+@router.get("/v2/async-study", response_model=ProductAndCustomer)
+async def get_all_products_and_customers(service: ServiceDep):
+    logger.info("Started GetAllProductsAndCustomers")
+    response: ProductAndCustomer = service.get_all_products_and_customers()
+
+    logger.info("GetAllProductsAndCustomers request finished")
+    return response
 
 
 @router.get("/products", response_model=List[Product])

@@ -8,3 +8,5 @@ pylint
 PyYAML
 ulid-py
 pytest-cov
+requests
+httpx

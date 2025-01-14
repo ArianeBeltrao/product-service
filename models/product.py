@@ -1,7 +1,8 @@
 from datetime import datetime
+from typing import List
 
 import ulid
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class Product(BaseModel):
@@ -17,3 +18,26 @@ class Product(BaseModel):
     updated_at: datetime | None = Field(
         default=None, description="Update product timestamp"
     )
+
+
+class Customer(BaseModel):
+    id: str = Field(
+        default_factory=lambda: str(ulid.new()),
+        description="Identificador único do cliente no formato ULID.",
+    )
+    name: str = Field(..., description="Nome do cliente.")
+    email: EmailStr = Field(..., description="Endereço de email válido do cliente.")
+    active: bool = Field(
+        default=True, description="Status do cliente (ativo ou inativo)."
+    )
+    created_at: datetime = Field(
+        default_factory=datetime.now, description="Data de criação do cliente."
+    )
+    updated_at: datetime | None = Field(
+        default=None, description="Data de atualização do cliente."
+    )
+
+
+class ProductAndCustomer(BaseModel):
+    products: List[Product]
+    customers: List[Customer]
