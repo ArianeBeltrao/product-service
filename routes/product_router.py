@@ -42,6 +42,23 @@ def get_product_by_id(id: str, service: ServiceDep):
         ) from e
 
 
+@router.get("/products/name/{name}", response_model=Product)
+def get_product_by_name(name: str, service: ServiceDep):
+    try:
+        logger.info(f"Started GetProductByName with name={name}")
+        product = service.get_product_by_name(name)
+
+        logger.info(
+            f"GetProductByName request finished with response={product.model_dump()}"
+        )
+        return product
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product not found with name {name}",
+        ) from e
+
+
 @router.post("/products", status_code=status.HTTP_201_CREATED, response_model=Product)
 def create_product(product: Product, service: ServiceDep):
     logger.info(f"Started CreateProduct with body={product.model_dump()}")
