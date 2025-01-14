@@ -7,20 +7,38 @@ from main import app
 from routes.product_router import get_product_service
 
 
-@fixture
-def service():
+@fixture(name="service")
+def fixture_service():
+    """
+    Creates a mock service object to simulate the product service layer.
+
+    Returns:
+        MagicMock: A mock service object.
+    """
     return MagicMock()
 
 
-@fixture
-def client(service):
+@fixture(name="client")
+def fixture_client(service):
+    """
+    Creates a TestClient instance with a mock product service dependency.
+
+    This fixture overrides the `get_product_service` dependency in the app
+    with the mock service, enabling testing of API endpoints.
+
+    Args:
+        service (MagicMock): A mock service object.
+
+    Returns:
+        TestClient: A TestClient instance for testing the FastAPI application.
+    """
     app.dependency_overrides[get_product_service] = lambda: service
     client = TestClient(app)
     return client
 
 
-@fixture
-def product_json():
+@fixture(name="product_json")
+def fixture_product_json():
     return {
         "id": "01JFTE35ZRRZWCSKK6TBB1DZCT",
         "name": "cacau house",

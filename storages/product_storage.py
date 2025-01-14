@@ -77,12 +77,12 @@ class ProductStorage:
                         product.created_at,
                     ),
                 )
+                self.db.commit()
                 return product
         except DatabaseError as ex:
             self.logger.error(f"Failed to insert product in DB. DatabaseError: {ex}")
+            self.db.rollback()
             raise
-        finally:
-            self.db.commit()
 
     def update_product(self, product: Product) -> Product:
         self.logger.info(f"Updating product in DB with ID {product.id}")
