@@ -57,6 +57,28 @@ class ProductStorage:
             )
             raise
 
+    def get_product_by_name(self, name: str) -> Product:
+        self.logger.info("Getting product by name in DB")
+        try:
+            with self.db.cursor() as cursor:
+                sql_query = """
+                    SELECT id, name, description, price, quantity, active, created_at, updated_at
+                    FROM products
+                    WHERE name = %s;
+                """
+                cursor.execute(sql_query, (name,))
+                result = cursor.fetchone()
+
+                if result is None:
+                    raise ValueError(f"Product not found with name {name}")
+
+                return self.map_product_row_to_model(result)
+        except DatabaseError as ex:
+            self.logger.error(
+                f"Failed to get product by name={name} in DB. DatabaseError: {ex}"
+            )
+            raise
+
     def create_product(self, product: Product) -> Product:
         self.logger.info("Inserting product in DB")
         try:

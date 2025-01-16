@@ -60,7 +60,7 @@ def fixture_product_row():
     """
     return (
         "01JFTE35ZRRZWCSKK6TBB1DZCT",
-        "cacau house",
+        "house",
         "bed for cats",
         Decimal("20.0"),
         100,
@@ -80,7 +80,7 @@ def fixture_updated_product_row():
     """
     return (
         "01JFTE35ZRRZWCSKK6TBB1DZCT",
-        "cacau house",
+        "house",
         "bed for cats",
         Decimal("20.0"),
         100,
@@ -128,6 +128,27 @@ def test_get_product_by_id(cursor, storage, product, product_row):
         WHERE id = %s;
         """,
         ("01JFTE35ZRRZWCSKK6TBB1DZCT",),
+    )
+
+
+def test_get_product_by_name(cursor, storage, product, product_row):
+    """
+    Test that `get_product_by_name` retrieves a product by Name from the database
+    and maps the result to the expected product model.
+    """
+    cursor.fetchone.return_value = product_row
+
+    result = storage.get_product_by_name("house")
+    assert result == product
+
+    cursor.execute.assert_called_once_with
+    (
+        """ 
+        SELECT id, name, description, price, quantity, active, created_at, updated_at
+        FROM products
+        WHERE name = %s;
+        """,
+        ("house",),
     )
 
 
@@ -261,6 +282,35 @@ def test_get_product_by_id_database_error(cursor, storage):
 
     with pytest.raises(DatabaseError):
         storage.get_product_by_id("01JFTE35ZRRZWCSKK6TBB1DZCT")
+
+    cursor.execute.assert_called_once()
+
+
+def test_get_product_by_name_value_error(cursor, storage):
+    """
+    Test that `get_product_by_name` raises a `ValueError`
+    when the product with the given Name does not exist in the database.
+    """
+    cursor.fetchone.return_value = None
+
+    with pytest.raises(ValueError):
+        storage.get_product_by_name("house")
+
+    cursor.execute.assert_called_once()
+    cursor.fetchone.assert_called_once()
+
+
+def test_get_product_by_name_database_error(cursor, storage):
+    """
+    Test that `get_product_by_name` raises a `DatabaseError`
+    when a database error occurs during the query execution.
+
+    Verifies that the cursor's `execute` method is called exactly once.
+    """
+    cursor.execute.side_effect = DatabaseError()
+
+    with pytest.raises(DatabaseError):
+        storage.get_product_by_name("house")
 
     cursor.execute.assert_called_once()
 

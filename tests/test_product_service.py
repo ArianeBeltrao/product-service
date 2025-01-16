@@ -56,6 +56,18 @@ def test_retrieve_product_by_id_successfully(product, storage, service):
     storage.get_product_by_id.assert_called_once_with("01JFTE35ZRRZWCSKK6TBB1DZCT")
 
 
+def test_retrieve_product_by_name_successfully(product, storage, service):
+    """
+    Tests that the `get_product_by_name` method retrieves the correct product
+    when a valid product Name is provided.
+    """
+    storage.get_product_by_name.return_value = product
+
+    result = service.get_product_by_name("house")
+    assert result == product
+    storage.get_product_by_name.assert_called_once_with("house")
+
+
 def test_create_product_successfully(product, storage, service):
     """
     Tests that the `create_product` method successfully creates a product
@@ -116,6 +128,19 @@ def test_retrieve_product_by_id_handles_value_error(storage, service):
         service.get_product_by_id("01JFTE35")
 
     storage.get_product_by_id.assert_called_once_with("01JFTE35")
+
+
+def test_retrieve_product_by_name_handles_value_error(storage, service):
+    """
+    Tests that the `get_product_by_name` method raises a `ValueError`
+    when provided with an invalid product Name.
+    """
+    storage.get_product_by_name.side_effect = ValueError()
+
+    with pytest.raises(ValueError):
+        service.get_product_by_name("house")
+
+    storage.get_product_by_name.assert_called_once_with("house")
 
 
 def test_create_product_handles_database_error(product, storage, service):

@@ -15,7 +15,7 @@ def fixture_product():
     """
     return Product(
         id="01JFTE35ZRRZWCSKK6TBB1DZCT",
-        name="cacau house",
+        name="house",
         description="bed for cats",
         price=20.0,
         quantity=100,
